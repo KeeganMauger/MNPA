@@ -1,3 +1,4 @@
+
 function vcvs(nd1,nd2,ni1,ni2,val)
 % Adds the stamp of a dependent voltage-controlled 
 % voltage-source(VCVS)to the matrices in circuit 

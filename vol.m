@@ -1,4 +1,4 @@
-function vol(n1,n2,val)
+function xr = vol(n1,n2,val)
 % Adds the stamp of an independent voltage source with a value
 % of "val" (Volts) connected between nodes n1 and n2 to the 
 % matrices in circuit representation.
