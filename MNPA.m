@@ -58,6 +58,10 @@ hold on
 plot(V0,x(3,:))
 grid on
 axis([-10 10 -100 100])
+title('Vout vs Vin')
+xlabel('Vin')
+ylabel('Vout')
+legend('Vout','V3')
 saveas(gcf,'Figure1')
 hold off
 
@@ -121,6 +125,9 @@ plot(w,abs(x(5,:)))
 hold on
 plot(w,abs(x(3,:)))
 grid on
+title('|Vout| vs Frequency')
+xlabel('Frequency')
+ylabel('Vout')
 saveas(gcf,'Figure2')
 hold off
 
@@ -129,6 +136,9 @@ gain = mag2db(mag);
 figure(3)
 plot(w,gain)
 grid on
+title('Gain vs Frequency')
+ylabel('Gain (dB)')
+xlabel('Frequency')
 saveas(gcf,'Figure3')
 
 % AC Case - Normal Perturbations on C
@@ -174,12 +184,31 @@ r = normrnd(mu,std,1,numR);
 
 C0 = zeros(width(G),length(G),numR);
 for i = 1:width(r)
+    C(1:2,1:2) = 0;
     cap(1,2,r(i));
     C0(:,:,i) = C;
 end
 
+x = sparse((width(G)),numR);
+for i = 1:numR
+    x(:,i) = (G + s*C0(:,:,i)) \ b;
+end
 
+mag = abs(x(5,:)./x(1,:));
+gain = mag2db(mag);
 
+figure(4)
+subplot(1,2,1);
+hist(r)
+title('Histogram of C, Normal Distribution')
+xlabel('C')
+ylabel('Number')
+subplot(1,2,2);
+hist(mag,10)
+title('Histogram of Gain, Normal Distribution')
+xlabel('Gain (V/V)')
+ylabel('Number')
+saveas(gcf,'Figure4')
 
 
 
