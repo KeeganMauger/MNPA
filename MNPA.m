@@ -11,6 +11,7 @@ b = sparse(nodes,1);
 
 % MNA setup
 Vin = 1;
+Vprobe = 0;
 R1 = 1;
 R2 = 2;
 R3 = 10;
@@ -20,16 +21,16 @@ C1 = 0.25;
 L1 = 0.2;
 alpha = 100;
 
+cap(1,2,C1);
 res(1,2,R1);
 res(2,0,R2);
 res(3,6,R3);
-xr = vol(6,0,0)
 res(4,5,R4);
 res(5,0,R5);
-cap(1,2,C1);
-vol(1,0,Vin);
+xr = vol(6,0,Vprobe);
 ind(2,3,L1);
-vcvs(4,0,xr,0,-alpha);
+vol(1,0,Vin);
+vcvs(4,0,xr,0,alpha);
 
 w = 0;
 s = j*w;
@@ -41,74 +42,84 @@ A0 = full(A);
 V0 = linspace(-10,10,21);
 b0 = sparse((width(G)),width(V0));
 for i = 1:width(V0)
-    b0(7,i) = V0(i);
+    b0(9,i) = V0(i);
 end
 
-% x = (G + s*C) \ b;
 x = sparse((width(G)),width(V0));
 
 for j = 1:width(V0)
     x(:,j) = (G + s*C) \ b0(:,j);
 end
-    
+
 figure(1)
 plot(V0,x(5,:))
 hold on
 plot(V0,x(3,:))
 grid on
+axis([-10 10 -100 100])
 saveas(gcf,'Figure1')
+hold off
 
+
+
+
+clear all
+clc
 % AC Case
-% global G b C
-% nodes = 5;
-% G = sparse(nodes,nodes);
-% C = sparse(nodes,nodes);
-% b = sparse(nodes,1);
-% 
-% % MNA setup
-% Vin = 1;
-% R1 = 1;
-% R2 = 2;
-% R3 = 10;
-% R4 = 0.1;
-% R5 = 1000;
-% C1 = 0.25;
-% L1 = 0.2;
-% alpha = 100;
-% 
-% res(1,2,R1);
-% res(2,0,R2);
-% res(3,0,R3);
-% res(4,5,R4);
-% res(5,0,R5);
-% cap(1,2,C1);
-% vol(1,0,Vin);
-% ind(2,3,L1);
-% ccvs(4,0,3,0,alpha);
-% 
-% w = pi;
-% s = j*w;
-% 
-% A = G + s*C;
+global G b C
+nodes = 6;
+G = sparse(nodes,nodes);
+C = sparse(nodes,nodes);
+b = sparse(nodes,1);
+
+% MNA setup
+Vin = 1;
+Vprobe = 0;
+R1 = 1;
+R2 = 2;
+R3 = 10;
+R4 = 0.1;
+R5 = 1000;
+C1 = 0.25;
+L1 = 0.2;
+alpha = 100;
+
+cap(1,2,C1);
+res(1,2,R1);
+res(2,0,R2);
+res(3,6,R3);
+res(4,5,R4);
+res(5,0,R5);
+xr = vol(6,0,Vprobe);
+ind(2,3,L1);
+vol(1,0,Vin);
+vcvs(4,0,xr,0,alpha);
+
+w = linspace(0,100,100);
+s = j*w;
+
+% A = G + s.*C;
 % A0 = full(A);
-% 
-% V0 = linspace(-10,10,21);
-% b0 = sparse((width(G)),width(V0));
-% for i = 1:width(V0)
+
+%V0 = linspace(-10,10,21);
+% b0 = sparse((width(G)),width(w));
+% for i = 1:width(w)
 %     b0(6,i) = V0(i);
 % end
-% 
-% % x = (G + s*C) \ b;
-% x = sparse((width(G)),width(V0));
-% 
-% for j = 1:width(V0)
-%     x(:,j) = (G + s*C) \ b0(:,j);
-% end
-%     
-% figure(2)
-% plot(V0,x(5,:))
-% grid on
-% saveas(gcf,'Figure2')
+
+% x = (G + s*C) \ b;
+x = sparse((width(G)),width(w));
+
+for i = 1:width(w)
+    x(:,i) = (G + s(i)*C) \ b;
+end
+    
+figure(2)
+plot(w,abs(x(5,:)))
+hold on
+plot(w,abs(x(3,:)))
+grid on
+saveas(gcf,'Figure2')
 
 
 
